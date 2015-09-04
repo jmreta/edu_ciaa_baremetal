@@ -108,9 +108,25 @@ int main(void)
 
 
 	volatile uint64_t i;
+	static ADC_CLOCK_SETUP_T ADCSetup;
+	static volatile uint8_t Burst_Mode_Flag = 0, Interrupt_Continue_Flag;
+	static volatile uint8_t ADC_Interrupt_Done_Flag;
+	uint16_t dataADC;
 
-   Chip_RIT_Init(LPC_RITIMER);
-   Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
+
+	Chip_ADC_Init(LPC_ADC0,&ADCSetup);
+
+	ADCSetup.adcRate=1000;
+    ADCSetup.bitsAccuracy=ADC_10BITS;
+    ADCSetup.burstMode=DISABLE;
+
+
+	Chip_ADC_EnableChannel(LPC_ADC0,ADC_CH1,ENABLE);
+	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
+
+
+    Chip_RIT_Init(LPC_RITIMER);
+    Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
 
     Chip_GPIO_Init(LPC_GPIO_PORT);
     Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* GPIO5[0], LED0R */
@@ -134,7 +150,23 @@ int main(void)
     Chip_GPIO_ClearValue(LPC_GPIO_PORT, 1,(1<<11)|(1<<12));
 
 
-    NVIC_EnableIRQ(RITIMER_IRQn);
+   // NVIC_EnableIRQ(RITIMER_IRQn);
+
+    while(1){
+    	/* Start A/D conversion */
+    	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
+      /* Waiting for A/D conversion complete */
+      while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH0,ADC_DR_DONE_STAT) != SET) {}
+      /* Read ADC value */
+      Chip_ADC_ReadValue(LPC_ADC0,ADC_CH0, &dataADC);
+     if (dataADC>500){
+    	 Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5, 1);
+       }
+     else{
+    	 Chip_GPIO_SetValue(LPC_GPIO_PORT, 5, 1);
+       }
+     }
+
 
        while(1) {
             /* add your code here */
