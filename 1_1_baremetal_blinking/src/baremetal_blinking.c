@@ -104,12 +104,17 @@ int main(void)
 
 
     Chip_GPIO_Init(LPC_GPIO_PORT);
-    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* GPIO5[0], LED0R */
-    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* GPIO5[1], LED0G */
-    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* GPIO5[2], LED0B */
-    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* GPIO0[14], LED1 */
-    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* GPIO1[11], LED2 */
-    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* GPIO1[12], LED3 */
+    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* remapea P2_0  en GPIO5[0], LED0R y habilita el pull up*/
+    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* remapea P2_1  en GPIO5[1], LED0G y habilita el pull up */
+    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* remapea P2_2  en GPIO5[2], LED0B y habilita el pull up */
+    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* remapea P2_10 en GPIO0[14], LED1 y habilita el pull up */
+    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* remapea P2_11 en GPIO1[11], LED2 y habilita el pull up */
+    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* remapea P2_12 en GPIO1[12], LED3 y habilita el pull up */
+
+    Chip_SCU_PinMux(1,0,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_0  en GPIO 0[4], SW1 */
+    Chip_SCU_PinMux(1,1,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_1  en GPIO 0[8], SW2 */
+    Chip_SCU_PinMux(1,2,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_2  en GPIO 0[9], SW3 */
+    Chip_SCU_PinMux(1,6,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_6  en GPIO 1[9], SW4 */
 
 
     Chip_GPIO_SetDir(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2),1);
@@ -127,7 +132,11 @@ int main(void)
     	     Chip_GPIO_SetPortToggle(LPC_GPIO_PORT,0,1<<14);      //Puerto 5  bit 0 --> LED ROJO
              //Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5, 1);
 
-          //   Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,5,0);      //Puerto 5  bit 0 --> LED ROJO
+
+
+
+
+             //Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,5,0);      //Puerto 5  bit 0 --> LED ROJO
              for (i=0;i<3000000;i++){
                asm  ("nop");
                }
