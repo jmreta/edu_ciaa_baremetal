@@ -31,7 +31,7 @@
  *
  */
 
-/** \brief Bare Metal example source file
+/** \Atención de teclas y leds de la EDU CIAA NXP baremetal (sin RTOS)
  **
  ** This is a mini example of the CIAA Firmware.
  **
@@ -58,8 +58,7 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_blinking_timer_irq.h"       /* <= own header */
-#include "teclas_y_leds.h"
+#include "teclas_y_leds.h"       /* <= own header */
 
 #ifndef CPU
 #error CPU shall be defined
@@ -69,7 +68,6 @@
 #elif (mk60fx512vlq15 == CPU)
 #else
 #endif
-
 
 /*==================[macros and definitions]=================================*/
 
@@ -93,41 +91,71 @@
  * \remarks This function never returns. Return value is only to avoid compiler
  *          warnings or errors.
  */
-static uint32_t i=0;
 
-void RIT_IRQHandler(void){
-    /* Clearn interrupt */
-   Chip_RIT_ClearInt(LPC_RITIMER);
 
-   ApagaLed(i+1);
-   i++;
-   i%=4;
-   PrendeLed(i+1);
+void InicializaPuertosTeclasYLeds(){
+
+    Chip_GPIO_Init(LPC_GPIO_PORT);
+    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* remapea P2_0  en GPIO5[0], LED0R y habilita el pull up*/
+    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* remapea P2_1  en GPIO5[1], LED0G y habilita el pull up */
+    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* remapea P2_2  en GPIO5[2], LED0B y habilita el pull up */
+    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* remapea P2_10 en GPIO0[14], LED1 y habilita el pull up */
+    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* remapea P2_11 en GPIO1[11], LED2 y habilita el pull up */
+    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* remapea P2_12 en GPIO1[12], LED3 y habilita el pull up */
+
+    Chip_SCU_PinMux(1,0,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_0  en GPIO 0[4], SW1 */
+    Chip_SCU_PinMux(1,1,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_1  en GPIO 0[8], SW2 */
+    Chip_SCU_PinMux(1,2,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_2  en GPIO 0[9], SW3 */
+    Chip_SCU_PinMux(1,6,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_6  en GPIO 1[9], SW4 */
+
+
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2),1);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 0,(1<<14),1);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 1,(1<<11)|(1<<12),1);
+
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2));
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 0,(1<<14));
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 1,(1<<11)|(1<<12));
+}
+
+uint8_t LeeTecla(void){
+
+  if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,0,4)) {return 1;}
+  else {
+    if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,0,8)) {return 2;}
+    else {
+      if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,0,9)) {return 3;}
+      else {
+    	if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,1,9)) {return 4;}
+    	else {return 0;}
+      }
     }
+  }
+}
 
-int main(void)
-{
-   /* perform the needed initialization here */
-
-
-	volatile uint64_t i;
-
-   Chip_RIT_Init(LPC_RITIMER);
-   Chip_RIT_SetTimerInterval(LPC_RITIMER,250);
-
-   InicializaPuertosTeclasYLeds();
-
-    NVIC_EnableIRQ(RITIMER_IRQn);
-
-       while(1) {
-
-         }
-         return 0;
-
+void PrendeLed(uint8_t led){
+  if (led==1) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 0, 14);}
+  if (led==2) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 1, 11);}
+  if (led==3) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 1, 12);}
+  if (led==4) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 0);}
+  if (led==5) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 1);}
+  if (led==6) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 2);}
 
 }
 
+
+void ApagaLed(uint8_t led){
+  if (led==1) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 0, 14);}
+  if (led==2) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 1, 11);}
+  if (led==3) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 1, 12);}
+  if (led==4) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 5, 0);}
+  if (led==5) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 5, 1);}
+  if (led==6) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 5, 2);}
+
+
+}
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /*==================[end of file]============================================*/
+
