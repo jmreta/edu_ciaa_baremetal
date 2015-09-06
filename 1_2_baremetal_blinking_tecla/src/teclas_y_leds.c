@@ -31,7 +31,7 @@
  *
  */
 
-/** \brief Blinking Bare Metal example source file
+/** \Atención de teclas y leds de la EDU CIAA NXP baremetal (sin RTOS)
  **
  ** This is a mini example of the CIAA Firmware.
  **
@@ -58,8 +58,7 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_blinking_tecla.h"       /* <= own header */
-#include "teclas_y_leds.h"
+#include "teclas_y_leds.h"       /* <= own header */
 
 #ifndef CPU
 #error CPU shall be defined
@@ -69,7 +68,6 @@
 #elif (mk60fx512vlq15 == CPU)
 #else
 #endif
-
 
 /*==================[macros and definitions]=================================*/
 
@@ -95,46 +93,67 @@
  */
 
 
+void InicializaPuertosTeclasYLeds(){
 
-int main(void)
-{
-   /* perform the needed initialization here */
+    Chip_GPIO_Init(LPC_GPIO_PORT);
+    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* remapea P2_0  en GPIO5[0], LED0R y habilita el pull up*/
+    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* remapea P2_1  en GPIO5[1], LED0G y habilita el pull up */
+    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* remapea P2_2  en GPIO5[2], LED0B y habilita el pull up */
+    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* remapea P2_10 en GPIO0[14], LED1 y habilita el pull up */
+    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* remapea P2_11 en GPIO1[11], LED2 y habilita el pull up */
+    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* remapea P2_12 en GPIO1[12], LED3 y habilita el pull up */
+
+    Chip_SCU_PinMux(1,0,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_0  en GPIO 0[4], SW1 */
+    Chip_SCU_PinMux(1,1,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_1  en GPIO 0[8], SW2 */
+    Chip_SCU_PinMux(1,2,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_2  en GPIO 0[9], SW3 */
+    Chip_SCU_PinMux(1,6,MD_PUP|MD_EZI|MD_ZI,FUNC0); /* remapea P1_6  en GPIO 1[9], SW4 */
 
 
-	volatile uint64_t i;
-    uint32_t tecla =0;
-    uint8_t led=4;
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2),1);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 0,(1<<14),1);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 1,(1<<11)|(1<<12),1);
 
-    InicializaPuertosTeclasYLeds();
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2));
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 0,(1<<14));
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 1,(1<<11)|(1<<12));
+}
 
+uint8_t LeeTecla(void){
 
-       while(1) {
-            /* add your code here */
+  if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,0,4)) {return 1;}
+  else {
+    if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,0,8)) {return 2;}
+    else {
+      if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,0,9)) {return 3;}
+      else {
+    	if (!Chip_GPIO_ReadPortBit(LPC_GPIO_PORT,1,9)) {return 4;}
+    	else {return 0;}
+      }
+    }
+  }
+}
 
-    	    tecla=LeeTecla();
-            if (tecla!=0 ) {
-              if (tecla==1){
-            	led=4;
-              } else {
-            	led=tecla-1;
-              }
-            }
-            PrendeLed(led);
-
-             for (i=0;i<3000000;i++){
-               asm  ("nop");
-               }
-             ApagaLed(led);
-
-             for (i=0;i<3000000;i++){
-               asm  ("nop");
-               }
-         }
-         return 0;
-
+void PrendeLed(uint8_t led){
+  if (led==1) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 0, 14);}
+  if (led==2) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 1, 11);}
+  if (led==3) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 1, 12);}
+  if (led==4) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 0);}
+  if (led==5) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 1);}
+  if (led==6) {Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 2);}
 
 }
 
+
+void ApagaLed(uint8_t led){
+  if (led==1) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 0, 14);}
+  if (led==2) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 1, 11);}
+  if (led==3) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 1, 12);}
+  if (led==4) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 5, 0);}
+  if (led==5) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 5, 1);}
+  if (led==6) {Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT, 5, 2);}
+
+
+}
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
