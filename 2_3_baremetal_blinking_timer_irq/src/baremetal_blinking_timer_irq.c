@@ -95,25 +95,32 @@
  */
 
    uint8_t led=4;
+   uint32_t retardo,_retardo;
 
 void RIT_IRQHandler(void){
     /* Clearn interrupt */
    Chip_RIT_ClearInt(LPC_RITIMER);
+   _retardo--;
+   if (!_retardo){
+	   InvierteLed(led);
+	   _retardo=retardo;
+	  }
 
-   InvierteLed(led);
     }
 
 int main(void)
 {
    /* perform the needed initialization here */
 
-
+   uint64_t i;
 
    uint32_t tecla =0;
 
+   retardo=5;
+   _retardo=retardo;
 
    Chip_RIT_Init(LPC_RITIMER);
-   Chip_RIT_SetTimerInterval(LPC_RITIMER,250);
+   Chip_RIT_SetTimerInterval(LPC_RITIMER,50);
 
    InicializaPuertosTeclasYLeds();
 
@@ -122,9 +129,38 @@ int main(void)
        while(1) {
     	   tecla=LeeTecla();
     	   if (tecla!=0 ) {
+             switch (tecla){
+               case 1:if (led!=4){
+            	        led--;
+            	        if (led==0){
+            	          led=4;
+
+                        }
+            	        ApagaLed(0);  // Apago todos los leds;
+                      }
+            	      break;
+               case 2:if (led!=3){
+            	        led++;
+            	        if (led==5){
+            	        	led=1;
+            	        }
+            	        ApagaLed(0);  // Apago todos los leds;
+                      }
+                      break;
+               case 3:retardo++;
+                      break;
+               case 4:if(retardo!=1){
+            	        retardo--;
+                        }
+              	      break;
+
+             }
 
 
-    	   ApagaLed(0);  // Apago todos los leds;
+
+    	   for (i=0;i<3000000;i++){
+    	                asm  ("nop");
+    	                }
     	   }
          }
          return 0;

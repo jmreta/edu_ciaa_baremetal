@@ -49,7 +49,6 @@ colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
 
 
 \section*{\large Objetivos}
-Mediante la realización de este trabajo práctico (TP) se pretende que el alumno logre:
 
 \begin{itemize}
         \item Estudiar el hardware de la EDU-CIAA-NXP.
@@ -70,6 +69,7 @@ Mediante la realización de este trabajo práctico (TP) se pretende que el alumno 
 \begin{itemize}
 
 \item \textbf{Consigna 1.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear el led amarillo con un periodo que permita visualizar el proceso. Emplear retardo por software.
+
 
 
 \item \textbf{Consigna 1.2}: Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear un led con un periodo que permita visualizar el proceso. Mediante las cuatro teclas disponibles se debe poder seleccionar el led activo. Emplear retardo por software.\\
@@ -152,9 +152,22 @@ Incorpore al ejercicio anterior la funcionalidad de variar el periodo de parpade
 
 \item \textbf{Consigna 5.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que envíe por el puerto serie la cadena \textit{Hola Mundo} a tasa de transferencia de 9600 baudios. La cadena debe enviarse cada vez que el usuario presiona la tecla 1. 
 
-\item \textbf{Consigna 5.2}: Diseñe e implemente un firmware sobre la EDU-CIAA que envíe por el puerto serie, cada vez qu se presiona la tecla 1, el valor de un contador de 256 cuentas. El valor del contador debe modificarse mediante las teclas 4 y 5.
+\item \textbf{Consigna 5.2}: Diseñe e implemente un firmware sobre la EDU-CIAA que lea el puerto serie a la espera del caracter ascii 'a'.
+En respuesta el sistema debe enviar por el mismo puerto la cadena "Hola Mundo" y cambiar el estado del LED 2 de la placa.
 
-\item \textbf{Consigna 5.3}: Diseñe e implemente un firmware sobre la EDU-CIAA que permita adquirir una señal analógica de excursión entre 0 y 3.3V,  presente en el pin XX. El sistema debe enviar por el puerto serie una cadena de caracteres con el valor en decimal del dato convertido.\\
+\item \textbf{Consigna 5.3}: Diseñe e implemente un firmware sobre la EDU-CIAA que lea el puerto serie a la espera del caracteres ascii.
+El sistema solo responderá a los carácteres 'a', 'r' y 'v' según el siguiente detalle:
+
+\begin{itemize}
+\item Caracter 'a': Se debe cambiar el estado del LED 1 y enviar por el puerto serie la cadena: \textit{Hola Mundo}
+\item Caracter 'r': Se debe cambiar el estado del LED 2 y enviar por el puerto serie la cadena: \textit{Hola Mundo}
+\item Caracter 'v': Se debe cambiar el estado del LED 3 y enviar por el puerto serie la cadena: \textit{Hola Mundo}
+\end{itemize}
+
+
+\item \textbf{Consigna 5.4}: Diseñe e implemente un firmware sobre la EDU-CIAA que envíe por el puerto serie, cada vez qu se presiona la tecla 1, el valor de un contador de 256 cuentas. El valor del contador debe modificarse mediante las teclas 4 y 5.
+
+\item \textbf{Consigna 5.5}: Diseñe e implemente un firmware sobre la EDU-CIAA que permita adquirir una señal analógica de excursión entre 0 y 3.3V,  presente en el CH1. El sistema debe enviar por el puerto serie una cadena de caracteres con el valor en decimal del dato convertido.\\
 
 \end{itemize}
 
