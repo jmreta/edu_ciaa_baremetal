@@ -122,8 +122,10 @@ int main(void)
        while(1) {
     	   tecla=LeeTecla();
     	   if (tecla!=0 ) {
-    	         	   ApagaLed(0);  // Apago todos los leds;
-    	 }
+
+
+    	   ApagaLed(0);  // Apago todos los leds;
+    	   }
          }
          return 0;
 

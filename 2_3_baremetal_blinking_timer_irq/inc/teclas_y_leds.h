@@ -31,18 +31,19 @@
  *
  */
 
-/** \brief Bare Metal example source file
+#ifndef TECLAS_Y_LEDS_H
+#define TECLAS_Y_LEDS_H
+/** \brief Bare Metal example header file
  **
- ** This is a mini example of the CIAA Firmware.
+ ** This is a mini example of the CIAA Firmware
  **
  **/
 
 /** \addtogroup CIAA_Firmware CIAA Firmware
  ** @{ */
-
 /** \addtogroup Examples CIAA Firmware Examples
  ** @{ */
-/** \addtogroup Baremetal Bare Metal example source file
+/** \addtogroup Baremetal Bare Metal example header file
  ** @{ */
 
 /*
@@ -58,79 +59,75 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_blinking_timer_irq.h"       /* <= own header */
-#include "teclas_y_leds.h"
+#include "stdint.h"
 
-#ifndef CPU
-#error CPU shall be defined
-#endif
-#if (lpc4337 == CPU)
-#include "chip.h"
-#elif (mk60fx512vlq15 == CPU)
+
+/*==================[macros]=================================================*/
+#define lpc4337            1
+#define mk60fx512vlq15     2
+
+/*==================[typedef]================================================*/
+
+/*==================[external data declaration]==============================*/
+#if (CPU == mk60fx512vlq15)
+/* Reset_Handler is defined in startup_MK60F15.S_CPP */
+void Reset_Handler( void );
+
+extern uint32_t __StackTop;
+#elif (CPU == lpc4337)
+/** \brief Reset ISR
+ **
+ ** ResetISR is defined in cr_startup_lpc43xx.c
+ **
+ ** \remark the definition is in
+ **         externals/drivers/cortexM4/lpc43xx/src/cr_startup_lpc43xx.c
+ **/
+extern void ResetISR(void);
+
+/** \brief Stack Top address
+ **
+ ** External declaration for the pointer to the stack top from the Linker Script
+ **
+ ** \remark only a declaration is needed, there is no definition, the address
+ **         is set in the linker script:
+ **         externals/base/cortexM4/lpc43xx/linker/ciaa_lpc4337.ld.
+ **/
+extern void _vStackTop(void);
+
+//Inicializa todos los puertos empleados para los 4 switchs de entrada
+// (Tecla 1 - Tecla 2 - Tecla 3 y Tecla 4)
+// y para todos los leds disponibles
+// (Led 1 - Led 2 -Led 3 y los tres leds del LED RGB
+void InicializaPuertosTeclasYLeds();
+
+//Lee las 4 teclas
+//retorna 0 si no hay tecla pulsada
+//retorna 1 si TEC1 ... 4 si TEC 4
+uint8_t LeeTecla(void);
+
+//Enciende un LED:
+// 1: LED 1      2:LED 2    3: LED 4    4:LED R del RGB   5:LED G del RGB    6:LED B del RGB
+// 0: enciende todos los leds
+void PrendeLed(uint8_t led);
+//Apaga un LED:
+// 1: LED 1      2:LED 2    3: LED 4    4:LED R del RGB   5:LED G del RGB    6:LED B del RGB
+// 0: apaga todos los leds
+void ApagaLed(uint8_t led);
+
+//Invierte el estado de un LED:
+// 1: LED 1      2:LED 2    3: LED 4    4:LED R del RGB   5:LED G del RGB    6:LED B del RGB
+// 0: invierte todos los leds
+void InvierteLed(uint8_t led);
+
+
 #else
 #endif
 
-
-/*==================[macros and definitions]=================================*/
-
-/*==================[internal data declaration]==============================*/
-
-/*==================[internal functions declaration]=========================*/
-
-/*==================[internal data definition]===============================*/
-
-/*==================[external data definition]===============================*/
-
-/*==================[internal functions definition]==========================*/
-
-/*==================[external functions definition]==========================*/
-/** \brief Main function
- *
- * This is the main entry point of the software.
- *
- * \returns 0
- *
- * \remarks This function never returns. Return value is only to avoid compiler
- *          warnings or errors.
- */
-
-   uint8_t led=4;
-
-void RIT_IRQHandler(void){
-    /* Clearn interrupt */
-   Chip_RIT_ClearInt(LPC_RITIMER);
-
-   InvierteLed(led);
-    }
-
-int main(void)
-{
-   /* perform the needed initialization here */
-
-
-
-   uint32_t tecla =0;
-
-
-   Chip_RIT_Init(LPC_RITIMER);
-   Chip_RIT_SetTimerInterval(LPC_RITIMER,250);
-
-   InicializaPuertosTeclasYLeds();
-
-    NVIC_EnableIRQ(RITIMER_IRQn);
-
-       while(1) {
-    	   tecla=LeeTecla();
-    	   if (tecla!=0 ) {
-    	         	   ApagaLed(0);  // Apago todos los leds;
-    	 }
-         }
-         return 0;
-
-
-}
+/*==================[external functions declaration]=========================*/
 
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /*==================[end of file]============================================*/
+#endif /* #ifndef TECLAS_Y_LEDS_H */
+
