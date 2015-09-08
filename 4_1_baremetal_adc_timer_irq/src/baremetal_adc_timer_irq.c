@@ -59,7 +59,7 @@
 
 /*==================[inclusions]=============================================*/
 #include "baremetal_adc_timer_irq.h"       /* <= own header */
-
+#include "teclas_y_leds.h"
 
 #ifndef CPU
 #error CPU shall be defined
@@ -113,16 +113,20 @@ int main(void)
 	static volatile uint8_t Burst_Mode_Flag = 0, Interrupt_Continue_Flag;
 	static volatile uint8_t ADC_Interrupt_Done_Flag;
 	uint16_t dataADC;
-	//uint16_t dataADCold=0;
 
 
-	Chip_ADC_Init(LPC_ADC0,&ADCSetup);
+	Chip_SCU_ADC_Channel_Config(0,1);
 
 	ADCSetup.adcRate=1000;
     ADCSetup.bitsAccuracy=ADC_10BITS;
     ADCSetup.burstMode=DISABLE;
+    
 
-    Chip_SCU_ADC_Channel_Config(0,1);
+	Chip_ADC_Init(LPC_ADC0,&ADCSetup);
+
+
+
+
 
 	Chip_ADC_EnableChannel(LPC_ADC0,ADC_CH1,ENABLE);
 	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
@@ -131,26 +135,7 @@ int main(void)
     Chip_RIT_Init(LPC_RITIMER);
     Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
 
-    Chip_GPIO_Init(LPC_GPIO_PORT);
-    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* GPIO5[0], LED0R */
-    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* GPIO5[1], LED0G */
-    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* GPIO5[2], LED0B */
-    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* GPIO0[14], LED1 */
-    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* GPIO1[11], LED2 */
-    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* GPIO1[12], LED3 */
-
-//    Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10
-  //  Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT,2,11);      //puerto 2 bit 11
-  //  Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10)
-  //  Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10)
-
-    Chip_GPIO_SetDir(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2),1);
-    Chip_GPIO_SetDir(LPC_GPIO_PORT, 0,(1<<14),1);
-    Chip_GPIO_SetDir(LPC_GPIO_PORT, 1,(1<<11)|(1<<12),1);
-
-    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2));
-    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 0,(1<<14));
-    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 1,(1<<11)|(1<<12));
+    InicializaPuertosTeclasYLeds();
 
 
    // NVIC_EnableIRQ(RITIMER_IRQn);
@@ -162,31 +147,18 @@ int main(void)
       while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
       /* Read ADC value */
       Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
-      //printf("El valor del adc es %20",dataADC);
-     if (dataADC<500){
-    	 Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5, 1);
+
+     if (dataADC>500){
+    	 PrendeLed(1);
        }
      else{
-    	 Chip_GPIO_SetValue(LPC_GPIO_PORT, 5, 1);
+    	 ApagaLed(1);
        }
-//     dataADCold=dataADC;
+
      }
 
 
-       while(1) {
-            /* add your code here */
-    	     Chip_GPIO_SetPortToggle(LPC_GPIO_PORT,0,1<<14);      //Puerto 5  bit 0 --> LED ROJO
-             //Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5, 1);
 
-          //   Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,5,0);      //Puerto 5  bit 0 --> LED ROJO
-             for (i=0;i<3000000;i++){
-               asm  ("nop");
-               }
-            // Chip_GPIO_SetPinOutHigh(LPC_GPIO_PORT, 5, 0);   //Puerto 5  bit 0 --> LED ROJO
-             for (i=0;i<3000000;i++){
-               asm  ("nop");
-               }
-         }
          return 0;
 
 
