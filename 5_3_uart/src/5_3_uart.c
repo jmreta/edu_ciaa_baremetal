@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Copyright 2014, 2015 Mariano Cerdeiro
  * Copyright 2014, Pablo Ridolfi
  * Copyright 2014, Juan Cecconi
@@ -490,4 +489,3 @@ int main(void)
 /** @} doxygen end group definition */
 /*==================[end of file]============================================*/
 
->>>>>>> origin/master
