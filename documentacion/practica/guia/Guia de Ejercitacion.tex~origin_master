@@ -1,0 +1,224 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[ansinew]{inputenc}
+%\usepackage[hidelinks]{hyperref}
+\usepackage[right=1.5cm,left=2.5cm,top=2cm,bottom=2cm,headsep=0cm,footskip=0.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{enumerate}
+\usepackage{enumerate}
+\usepackage{caption}   	%para colocar los caption en las figuras dentro el ambiente minipage.
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+%\usepackage[hidelinks]{hyperref}
+\title{Programación de la EDU-CIAA en lenguaje C}
+\author{}
+
+\bibliographystyle{plain}
+\hypersetup{ %
+colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
+}
+%pdfborder = {0 0 0}
+\begin{document}
+
+%\begin{titlepage}
+
+\setlength{\unitlength}{0.2cm}\hypersetup{colorlinks=false,linkbordercolor=red,linkcolor=green,pdfborderstyle={/S/U/W 1}}
+ %Especificar unidad de trabajo
+
+\begin{multicols}{2}
+
+\begin{flushleft}
+    \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
+\end{flushleft}
+\columnbreak
+\bigskip
+\begin{flushright}
+    \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
+\end{flushright}
+\end{multicols}
+\vspace{0.5cm}
+
+\begin{center}
+    {\large \textbf{Guia de Ejercitación}}\\[0.5cm]
+    \textbf{\large Programación de la EDU-CIAA en lenguaje C}\\[1.5cm]
+
+\end{center}
+
+
+\section*{\large Objetivos}
+
+\begin{itemize}
+        \item Estudiar el hardware de la EDU-CIAA-NXP.
+        \item Analizar características de la arquitectura ARM Cortex M4 sobre el microcontrolador LPC4337.
+        \item Desarrollar experiencia en la instalacióny uso del CIAA-IDE.
+
+\end{itemize}
+
+%\newpage
+\vspace{1cm}
+%\begin{center}
+\section{\large Manejo de Puertos I/O}
+%\end{center}
+
+%\begin{flushright}
+%\includegraphics[width=1in]{Imagenes/led}
+%\end{flushright}
+\begin{itemize}
+
+\item \textbf{Consigna 1.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear el led amarillo con un periodo que permita visualizar el proceso. Emplear retardo por software.
+
+
+
+\item \textbf{Consigna 1.2}: Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear un led con un periodo que permita visualizar el proceso. Mediante las cuatro teclas disponibles se debe poder seleccionar el led activo. Emplear retardo por software.\\
+\end{itemize}
+
+%\begin{center}
+\section{\large Manejo de Temporizadores e Interrupciones}
+%\end{center}
+
+\begin{itemize}
+
+\item \textbf{Consigna 2.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que encienda de a un led por vez y de manera secuencial. El tiempo de encendido de cada led ser 250ms. Se deberá temporizar mediante interrupciones sin usar funciones de retardo por software.
+
+
+\item \textbf{Cosigna 2.2}: Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear un led con un periodo de 250 ms. El sistema debe permitir seleccionar uno de entre 4 de los leds disponibles empleando una tecla para cada led.\\
+\begin{itemize}
+\item Tec 1: Selecciona LED RGB (uno de los tres colores)
+\item Tec 2: Selecciona LED 1.
+\item Tec 3: Selecciona LED 2.
+\item Tec 4: Selecciona LED 3.
+\end{itemize}
+
+
+\item \textbf{Consigna 2.3}: 
+
+Incorpore al ejercicio anterior la funcionalidad de variar el periodo de parpadeo del led activo.\\
+
+\begin{itemize}
+\item Tec 1: Selecciona el LED a la izquierda del actual.
+\item Tec 2: Selecciona LED a la derecha del actual.
+\item Tec 3: Disminuye el periodo de parpadeo.
+\item Tec 4: Aumenta el periodo de parpadeo.
+\end{itemize}
+
+\end{itemize}
+
+
+%\begin{center}
+\section{\large Generación de Señales Analógicas (D/A)}
+%\end{center}
+
+\begin{itemize}
+
+\item \textbf{Consigna 3.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que genera una señal tipo diente de sierra de periodo 100 ms y excursión de 0 a 3V.
+
+\item \textbf{Cosigna 3.2}: Incorpore al ejercicio anterior la funcoinalidad de variariar el periodo y la amplitud de la señal. \\
+
+\begin{itemize}
+\item Tec 1: Aumenta la amplitud de la señal. 
+\item Tec 2: Disminuye la amplitu de la señal.
+\item Tec 3: Aumenta el periodo de la señal.
+\item Tec 4: disminuye el periodo de la señal. 
+\end{itemize}
+
+\end{itemize}
+
+
+%\begin{center}
+\section{\large Adquisición de datos}
+%\end{center}
+
+\begin{itemize}
+
+\item \textbf{Consigna 4.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que permita adquirir una señal analógica de excursión entre 0 y 3.3V,  presente en el pin XX. El sistema debe encender el led rojo se la señal toma su valor máximo y led verde si la señal toma su valor mínimo.
+
+\item \textbf{Cosigna 4.2}: Incorpore al ejercicio anterior la funcionalidad de variariar los umbrales máximo y mínimo.\\
+
+\begin{itemize}
+\item Tec 1: Aumenta el valor del umbral.
+\item Tec 2: Disminuye el valor del umbral.
+\end{itemize}
+
+\end{itemize}
+
+%\begin{center}
+\section{\large Transmisión de datos adquiridos a través del Puerto Serie}
+%\end{center}
+
+\begin{itemize}
+
+\item \textbf{Consigna 5.1}: Diseñe e implemente un firmware sobre la EDU-CIAA que envíe por el puerto serie la cadena \textit{Hola Mundo} a tasa de transferencia de 9600 baudios. La cadena debe enviarse cada vez que el usuario presiona la tecla 1. 
+
+\item \textbf{Consigna 5.2}: Diseñe e implemente un firmware sobre la EDU-CIAA que lea el puerto serie a la espera del caracter ascii 'a'.
+En respuesta el sistema debe enviar por el mismo puerto la cadena "Hola Mundo" y cambiar el estado del LED 2 de la placa.
+
+\item \textbf{Consigna 5.3}: Diseñe e implemente un firmware sobre la EDU-CIAA que lea el puerto serie a la espera del caracteres ascii.
+El sistema solo responderá a los carácteres 'a', 'r' y 'v' según el siguiente detalle:
+
+\begin{itemize}
+\item Caracter 'a': Se debe cambiar el estado del LED 1 y enviar por el puerto serie la cadena: \textit{Hola Mundo}
+\item Caracter 'r': Se debe cambiar el estado del LED 2 y enviar por el puerto serie la cadena: \textit{Hola Mundo}
+\item Caracter 'v': Se debe cambiar el estado del LED 3 y enviar por el puerto serie la cadena: \textit{Hola Mundo}
+\end{itemize}
+
+
+\item \textbf{Consigna 5.4}: Diseñe e implemente un firmware sobre la EDU-CIAA que envíe por el puerto serie, cada vez qu se presiona la tecla 1, el valor de un contador de 256 cuentas. El valor del contador debe modificarse mediante las teclas 4 y 5.
+
+\item \textbf{Consigna 5.5}: Diseñe e implemente un firmware sobre la EDU-CIAA que permita adquirir una señal analógica de excursión entre 0 y 3.3V,  presente en el CH1. El sistema debe enviar por el puerto serie una cadena de caracteres con el valor en decimal del dato convertido.\\
+
+\end{itemize}
+
+%\begin{center}
+\section{\large Manejo de periféricos con POSIX}
+%\end{center}
+
+Repita las consignas 1.1, 1.2 y 2.1 usando las funciones POSIX definidas en el Firmware de la CIAA.
+
+
+%\bibliography{SAPS_bibliografia}
+\end{document}
+
+%\begin{document}
+%
+%\setlength{\unitlength}{1 cm} %Especificar unidad de trabajo
+%\thispagestyle{empty}
+%\begin{picture}(18,4)
+%%\put(0,0){\includegraphics[width=3cm,height=4cm]{uco.jpg}}
+%%\put(11.5,0){\includegraphics[width=4cm,height=4cm]{eupinf.jpg}}
+%\end{picture}
+%\\
+%\\
+%\begin{center}
+%\textbf{{\Huge Universidad de Córdoba}\\[0.5cm]
+%{\LARGE Escuela Politécnica Superior}}\\[1.25cm]
+%{\Large Redes}\\[2.3cm]
+%{\LARGE \textbf{Apuntes}}\\[3.5cm]
+%{\large Tu nombre}\\[2cm]
+%2º Ingeniería Informática (2º Ciclo)\\[1cm]
+%Córdoba - \today
+%\end{center}
+%
+%\end{document}
+
+
+%\tiny
+%\scriptsize
+%\footnotesize
+%\small
+%\normalsize (Por defecto)
+%\large
+%\Large (“L” mayúscula)
+%\LARGE (Todas mayúsculas)
+%\huge
+%\Huge (“H” mayúscula)
+
+
+
+
+
+
+
+
