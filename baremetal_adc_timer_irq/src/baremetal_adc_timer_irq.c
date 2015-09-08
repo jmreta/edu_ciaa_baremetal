@@ -60,6 +60,7 @@
 /*==================[inclusions]=============================================*/
 #include "baremetal_adc_timer_irq.h"       /* <= own header */
 
+
 #ifndef CPU
 #error CPU shall be defined
 #endif
@@ -112,14 +113,16 @@ int main(void)
 	static volatile uint8_t Burst_Mode_Flag = 0, Interrupt_Continue_Flag;
 	static volatile uint8_t ADC_Interrupt_Done_Flag;
 	uint16_t dataADC;
+	//uint16_t dataADCold=0;
 
-	Chip_SCU_ADC_Channel_Config(0,1);
+
 	Chip_ADC_Init(LPC_ADC0,&ADCSetup);
 
 	ADCSetup.adcRate=1000;
     ADCSetup.bitsAccuracy=ADC_10BITS;
     ADCSetup.burstMode=DISABLE;
 
+    Chip_SCU_ADC_Channel_Config(0,1);
 
 	Chip_ADC_EnableChannel(LPC_ADC0,ADC_CH1,ENABLE);
 	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
@@ -159,12 +162,14 @@ int main(void)
       while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
       /* Read ADC value */
       Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
-     if (dataADC>500){
+      //printf("El valor del adc es %20",dataADC);
+     if (dataADC<500){
     	 Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5, 1);
        }
      else{
     	 Chip_GPIO_SetValue(LPC_GPIO_PORT, 5, 1);
        }
+//     dataADCold=dataADC;
      }
 
 
