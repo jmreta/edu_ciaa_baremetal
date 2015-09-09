@@ -59,6 +59,7 @@
 
 /*==================[inclusions]=============================================*/
 #include "baremetal_dac_timer_irq.h"       /* <= own header */
+#include "teclas_y_leds.h"
 
 #ifndef CPU
 #error CPU shall be defined
@@ -97,23 +98,30 @@
 
 
 uint32_t DatoDAC;
+uint32_t Vmax,T,t;
 
 void RIT_IRQHandler(void){
     /* Clearn interrupt */
    Chip_RIT_ClearInt(LPC_RITIMER);
-
+   t++;
+   t%=T;
+   DatoDAC=(t*Vmax)/T;
    /* Saco dato por DAC */
    Chip_DAC_UpdateValue(LPC_DAC,DatoDAC);
-   DatoDAC++;
-   DatoDAC%=1024;
+   if (t==0) {
+  	   InvierteLed(1);
+       }
     }
 
 int main(void)
 {
    /* perform the needed initialization here */
-
-
+	uint32_t tecla =0;
+	uint64_t i;
+	Vmax=930;
+    T=100;
 	DatoDAC=0;
+
 
 	Chip_SCU_DAC_Analog_Config(); //select DAC function
 	Chip_DAC_Init(LPC_DAC); //initialize DAC
@@ -126,32 +134,37 @@ int main(void)
     Chip_RIT_Init(LPC_RITIMER);
     Chip_RIT_SetTimerInterval(LPC_RITIMER,10);
 
-    Chip_GPIO_Init(LPC_GPIO_PORT);
-    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* GPIO5[0], LED0R */
-    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* GPIO5[1], LED0G */
-    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* GPIO5[2], LED0B */
-    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* GPIO0[14], LED1 */
-    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* GPIO1[11], LED2 */
-    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* GPIO1[12], LED3 */
-
-//    Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10
-  //  Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT,2,11);      //puerto 2 bit 11
-  //  Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10)
-  //  Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10)
-
-    Chip_GPIO_SetDir(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2),1);
-    Chip_GPIO_SetDir(LPC_GPIO_PORT, 0,(1<<14),1);
-    Chip_GPIO_SetDir(LPC_GPIO_PORT, 1,(1<<11)|(1<<12),1);
-
-    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2));
-    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 0,(1<<14));
-    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 1,(1<<11)|(1<<12));
-
+    InicializaPuertosTeclasYLeds();
 
     NVIC_EnableIRQ(RITIMER_IRQn);
 
        while(1) {
-
+    	 tecla=LeeTecla();
+    	 if (tecla!=0 ) {
+    	   switch(tecla){
+    	     case 1:{if (Vmax<1011){
+    		           Vmax+=10;
+    	               }
+                     break;
+    	             }
+    	     case 2:{if (Vmax>0){
+		               Vmax-=10;
+	                   }
+    	             break;
+    	       	     }
+    	     case 3:{T+=10;
+    	             break;
+    	       	     }
+    	     case 4:{if(T>10){
+    		           T-=10;
+    	               }
+    	             break;
+    	       	     }
+    	     }
+    	   for (i=0;i<3000000;i++){
+    	     asm  ("nop");
+    	     }
+    	   }
          }
          return 0;
 
