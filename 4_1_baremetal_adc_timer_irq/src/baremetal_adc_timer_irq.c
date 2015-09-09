@@ -95,12 +95,6 @@
  */
 
 
-void RIT_IRQHandler(void){
-    /* Clearn interrupt */
-   Chip_RIT_ClearInt(LPC_RITIMER);
-	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
-
-    }
 
 
 
@@ -133,29 +127,27 @@ int main(void)
 	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
 
 
-    Chip_RIT_Init(LPC_RITIMER);
-    Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
+
 
     InicializaPuertosTeclasYLeds();
 
 
-    NVIC_EnableIRQ(RITIMER_IRQn);
 
 
     while(1){
     	/* Start A/D conversion */
-  //  	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
+    	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
       /* Waiting for A/D conversion complete */
       while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
       /* Read ADC value */
       Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
 
-     if (dataADC==0){
+     if (dataADC<2){
        PrendeLed(1);
        ApagaLed(2);
        }
      else{
-       if (dataADC==1023){
+       if (dataADC>1021){
          PrendeLed(2);
     	 ApagaLed(1);
     	 }

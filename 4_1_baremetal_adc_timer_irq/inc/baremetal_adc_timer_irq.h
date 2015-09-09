@@ -95,7 +95,6 @@ extern void _vStackTop(void);
 
 
 
-void RIT_IRQHandler(void);
 
 
 #else

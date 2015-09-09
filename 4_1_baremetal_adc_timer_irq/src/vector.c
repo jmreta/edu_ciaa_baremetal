@@ -260,7 +260,7 @@ void (* const g_pfnVectors[])(void) = {
    ISR_NoHandler,      /* 0x18 0x00000060 - No Handler set for ISR USB0 (IRQ 8) */
    ISR_NoHandler,      /* 0x19 0x00000064 - No Handler set for ISR USB1 (IRQ 9) */
    ISR_NoHandler,      /* 0x1a 0x00000068 - No Handler set for ISR SCT (IRQ 10) */
-   RIT_IRQHandler,        /* 0x1b 0x0000006C - No Handler set for ISR RIT (IRQ 11) */
+   ISR_NoHandler,        /* 0x1b 0x0000006C - No Handler set for ISR RIT (IRQ 11) */
    ISR_NoHandler,      /* 0x1c 0x00000070 - No Handler set for ISR TIMER0 (IRQ 12) */
    ISR_NoHandler,      /* 0x1d 0x00000074 - No Handler set for ISR TIMER1 (IRQ 13) */
    ISR_NoHandler,      /* 0x1e 0x00000078 - No Handler set for ISR TIMER2 (IRQ 14) */
