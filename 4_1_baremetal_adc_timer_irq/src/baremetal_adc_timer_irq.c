@@ -1,4 +1,4 @@
-/* Copyright 2015, Eduardo Filomena
+	/* Copyright 2015, Eduardo Filomena
  * All rights reserved.
  *
  * This file is part of CIAA Firmware.
@@ -114,7 +114,7 @@ int main(void)
 	uint16_t dataADC;
 
 
-	Chip_SCU_ADC_Channel_Config(0,1);
+//	Chip_SCU_ADC_Channel_Config(0,1);
 
 	ADCSetup.adcRate=1000;
     ADCSetup.bitsAccuracy=ADC_10BITS;
@@ -147,11 +147,19 @@ int main(void)
       /* Read ADC value */
       Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
 
-     if (dataADC>500){
-    	 PrendeLed(1);
+     if (dataADC==0){
+       PrendeLed(1);
+       ApagaLed(2);
        }
      else{
+       if (dataADC==1023){
+         PrendeLed(2);
     	 ApagaLed(1);
+    	 }
+       else{
+    	 ApagaLed(1);
+    	 ApagaLed(2);
+    	 }
        }
 
      }
