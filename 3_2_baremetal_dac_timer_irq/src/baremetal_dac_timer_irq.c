@@ -58,8 +58,7 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_adc_timer_irq.h"       /* <= own header */
-#include "teclas_y_leds.h"
+#include "baremetal_dac_timer_irq.h"       /* <= own header */
 
 #ifndef CPU
 #error CPU shall be defined
@@ -95,12 +94,18 @@
  */
 
 
+
+
+uint32_t DatoDAC;
+
 void RIT_IRQHandler(void){
     /* Clearn interrupt */
    Chip_RIT_ClearInt(LPC_RITIMER);
 
-   /* Toggle LED */
-   Chip_GPIO_SetPortToggle(LPC_GPIO_PORT,5,2);      //Puerto 5  bit 1--> LED VERDE
+   /* Saco dato por DAC */
+   Chip_DAC_UpdateValue(LPC_DAC,DatoDAC);
+   DatoDAC++;
+   DatoDAC%=1024;
     }
 
 int main(void)
@@ -108,56 +113,46 @@ int main(void)
    /* perform the needed initialization here */
 
 
-	static ADC_CLOCK_SETUP_T ADCSetup;
+	DatoDAC=0;
+
+	Chip_SCU_DAC_Analog_Config(); //select DAC function
+	Chip_DAC_Init(LPC_DAC); //initialize DAC
+	Chip_DAC_SetBias(LPC_DAC, DAC_MAX_UPDATE_RATE_400kHz);
+	Chip_DAC_SetDMATimeOut(LPC_DAC, 0xffff);
+	Chip_DAC_ConfigDAConverterControl(LPC_DAC, DAC_CNT_ENA | DAC_DMA_ENA);
 
 
-	uint16_t dataADC;
-
-
-	Chip_SCU_ADC_Channel_Config(0,1);
-
-	ADCSetup.adcRate=1000;
-    ADCSetup.bitsAccuracy=ADC_10BITS;
-    ADCSetup.burstMode=DISABLE;
-    
-
-	Chip_ADC_Init(LPC_ADC0,&ADCSetup);
-
-
-
-
-
-	Chip_ADC_EnableChannel(LPC_ADC0,ADC_CH1,ENABLE);
-	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
-
-
+	
     Chip_RIT_Init(LPC_RITIMER);
-    Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
+    Chip_RIT_SetTimerInterval(LPC_RITIMER,10);
 
-    InicializaPuertosTeclasYLeds();
+    Chip_GPIO_Init(LPC_GPIO_PORT);
+    Chip_SCU_PinMux(2,0,MD_PUP,FUNC4);  /* GPIO5[0], LED0R */
+    Chip_SCU_PinMux(2,1,MD_PUP,FUNC4);  /* GPIO5[1], LED0G */
+    Chip_SCU_PinMux(2,2,MD_PUP,FUNC4);  /* GPIO5[2], LED0B */
+    Chip_SCU_PinMux(2,10,MD_PUP,FUNC0); /* GPIO0[14], LED1 */
+    Chip_SCU_PinMux(2,11,MD_PUP,FUNC0); /* GPIO1[11], LED2 */
+    Chip_SCU_PinMux(2,12,MD_PUP,FUNC0); /* GPIO1[12], LED3 */
 
+//    Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10
+  //  Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT,2,11);      //puerto 2 bit 11
+  //  Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10)
+  //  Chip_GPIO_SetPinOutLow(LPC_GPIO_PORT,2,10);      //puerto 2 bit 10)
 
-   // NVIC_EnableIRQ(RITIMER_IRQn);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2),1);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 0,(1<<14),1);
+    Chip_GPIO_SetDir(LPC_GPIO_PORT, 1,(1<<11)|(1<<12),1);
 
-    while(1){
-    	/* Start A/D conversion */
-    	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
-      /* Waiting for A/D conversion complete */
-      while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
-      /* Read ADC value */
-      Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
-
-     if (dataADC>500){
-    	 PrendeLed(1);
-       }
-     else{
-    	 ApagaLed(1);
-       }
-
-     }
-
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 5,(1<<0)|(1<<1)|(1<<2));
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 0,(1<<14));
+    Chip_GPIO_ClearValue(LPC_GPIO_PORT, 1,(1<<11)|(1<<12));
 
 
+    NVIC_EnableIRQ(RITIMER_IRQn);
+
+       while(1) {
+
+         }
          return 0;
 
 
