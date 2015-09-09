@@ -1,4 +1,4 @@
-/* Copyright 2015, Eduardo Filomena
+	/* Copyright 2015, Eduardo Filomena
  * All rights reserved.
  *
  * This file is part of CIAA Firmware.
@@ -58,7 +58,7 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_dac_timer_irq.h"       /* <= own header */
+#include "baremetal_adc_timer_irq.h"       /* <= own header */
 #include "teclas_y_leds.h"
 
 #ifndef CPU
@@ -95,77 +95,88 @@
  */
 
 
-
-
-uint32_t DatoDAC;
-uint32_t Vmax,T,t;
-
 void RIT_IRQHandler(void){
-    /* Clearn interrupt */
+    /* Clear interrupt */
    Chip_RIT_ClearInt(LPC_RITIMER);
-   t++;
-   t%=T;
-   DatoDAC=(t*Vmax)/T;
-   /* Saco dato por DAC */
-   Chip_DAC_UpdateValue(LPC_DAC,DatoDAC);
-   if (t==0) {
-  	   InvierteLed(1);
-       }
+
+   Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
+   InvierteLed(1);
+    }
+
+
+void ADC0_IRQHandler(void){
+	/* Clearn interrupt */
+	 //  Chip_RIT_ClearInt(LPC_RITIMER);
+    InvierteLed(2);
     }
 
 int main(void)
 {
    /* perform the needed initialization here */
-	uint32_t tecla =0;
-	uint64_t i;
-	Vmax=930;
-    T=1000;
-	DatoDAC=0;
 
 
-	Chip_SCU_DAC_Analog_Config(); //select DAC function
-	Chip_DAC_Init(LPC_DAC); //initialize DAC
-	Chip_DAC_SetBias(LPC_DAC, DAC_MAX_UPDATE_RATE_400kHz);
-	Chip_DAC_SetDMATimeOut(LPC_DAC, 0xffff);
-	Chip_DAC_ConfigDAConverterControl(LPC_DAC, DAC_CNT_ENA | DAC_DMA_ENA);
+	static ADC_CLOCK_SETUP_T ADCSetup;
 
 
-	
+	uint16_t dataADC;
+
+
+//	Chip_SCU_ADC_Channel_Config(0,1);
+
+	ADCSetup.adcRate=1000;
+    ADCSetup.bitsAccuracy=ADC_10BITS;
+    ADCSetup.burstMode=DISABLE;
+    
+
+	Chip_ADC_Init(LPC_ADC0,&ADCSetup);
+
+
+
+
+
+	Chip_ADC_EnableChannel(LPC_ADC0,ADC_CH1,ENABLE);
+	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
+
+
+
     Chip_RIT_Init(LPC_RITIMER);
-    Chip_RIT_SetTimerInterval(LPC_RITIMER,1);
+    Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
 
     InicializaPuertosTeclasYLeds();
 
-    NVIC_EnableIRQ(RITIMER_IRQn);
 
-       while(1) {
-    	 tecla=LeeTecla();
-    	 if (tecla!=0 ) {
-    	   switch(tecla){
-    	     case 1:{if (Vmax<1011){
-    		           Vmax+=10;
-    	               }
-                     break;
-    	             }
-    	     case 2:{if (Vmax>0){
-		               Vmax-=10;
-	                   }
-    	             break;
-    	       	     }
-    	     case 3:{T+=10;
-    	             break;
-    	       	     }
-    	     case 4:{if(T>10){
-    		           T-=10;
-    	               }
-    	             break;
-    	       	     }
-    	     }
-    	   for (i=0;i<1000000;i++){
-    	     asm  ("nop");
-    	     }
-    	   }
-         }
+    NVIC_EnableIRQ(RITIMER_IRQn);
+    NVIC_EnableIRQ(ADC0_IRQn);
+
+    while(1){};
+
+    while(1){
+    	/* Start A/D conversion */
+    	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
+      /* Waiting for A/D conversion complete */
+      while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
+      /* Read ADC value */
+      Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
+
+     if (dataADC==0){
+       PrendeLed(1);
+       ApagaLed(2);
+       }
+     else{
+       if (dataADC==1023){
+         PrendeLed(2);
+    	 ApagaLed(1);
+    	 }
+       else{
+    	 ApagaLed(1);
+    	 ApagaLed(2);
+    	 }
+       }
+
+     }
+
+
+
          return 0;
 
 

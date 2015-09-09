@@ -98,10 +98,12 @@
 void RIT_IRQHandler(void){
     /* Clearn interrupt */
    Chip_RIT_ClearInt(LPC_RITIMER);
+	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
 
-   /* Toggle LED */
-   Chip_GPIO_SetPortToggle(LPC_GPIO_PORT,5,2);      //Puerto 5  bit 1--> LED VERDE
     }
+
+
+
 
 int main(void)
 {
@@ -137,11 +139,12 @@ int main(void)
     InicializaPuertosTeclasYLeds();
 
 
-   // NVIC_EnableIRQ(RITIMER_IRQn);
+    NVIC_EnableIRQ(RITIMER_IRQn);
+
 
     while(1){
     	/* Start A/D conversion */
-    	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
+  //  	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
       /* Waiting for A/D conversion complete */
       while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
       /* Read ADC value */
