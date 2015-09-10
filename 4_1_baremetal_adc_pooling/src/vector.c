@@ -55,7 +55,7 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_adc_timer_irq.h"
+#include "baremetal_adc_pooling.h"
 
 /*==================[macros and definitions]=================================*/
 

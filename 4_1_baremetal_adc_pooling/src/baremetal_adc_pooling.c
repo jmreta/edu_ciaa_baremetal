@@ -58,7 +58,7 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "baremetal_adc_timer_irq.h"       /* <= own header */
+#include "baremetal_adc_pooling.h"       /* <= own header */
 #include "teclas_y_leds.h"
 
 #ifndef CPU

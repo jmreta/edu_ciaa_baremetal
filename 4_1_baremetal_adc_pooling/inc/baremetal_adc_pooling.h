@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef BAREMETAL_ADC_TIMER_IRQ_H
-#define BAREMETAL_ADC_TIMER_IRQ_H
+#ifndef BAREMETAL_ADC_POOLING_H
+#define BAREMETAL_ADC_POOLING_H
 /** \brief Bare Metal example header file
  **
  ** This is a mini example of the CIAA Firmware
@@ -106,5 +106,5 @@ extern void _vStackTop(void);
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /*==================[end of file]============================================*/
-#endif /* #ifndef BAREMETAL_ADC_TIMER_IRQ_H*/
+#endif /* #ifndef BAREMETAL_ADC_POOLING_H*/
 
