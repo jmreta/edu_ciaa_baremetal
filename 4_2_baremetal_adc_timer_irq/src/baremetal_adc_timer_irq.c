@@ -93,7 +93,7 @@
  * \remarks This function never returns. Return value is only to avoid compiler
  *          warnings or errors.
  */
-
+static uint16_t dataADC;
 
 void RIT_IRQHandler(void){
     /* Clear interrupt */
@@ -105,9 +105,10 @@ void RIT_IRQHandler(void){
 
 
 void ADC0_IRQHandler(void){
-	/* Clearn interrupt */
-	 //  Chip_RIT_ClearInt(LPC_RITIMER);
-    InvierteLed(2);
+	Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
+
+	InvierteLed(2);
+
     }
 
 int main(void)
@@ -118,7 +119,7 @@ int main(void)
 	static ADC_CLOCK_SETUP_T ADCSetup;
 
 
-	uint16_t dataADC;
+
 
 
 //	Chip_SCU_ADC_Channel_Config(0,1);
@@ -137,10 +138,13 @@ int main(void)
 	Chip_ADC_EnableChannel(LPC_ADC0,ADC_CH1,ENABLE);
 	Chip_ADC_SetSampleRate(LPC_ADC0, &ADCSetup,ADC_MAX_SAMPLE_RATE);
 
+	/*Enable interrupt for ADC channel */
+	Chip_ADC_Int_SetChannelCmd(LPC_ADC0,ADC_CH1,ENABLE);
+
 
 
     Chip_RIT_Init(LPC_RITIMER);
-    Chip_RIT_SetTimerInterval(LPC_RITIMER,1000);
+    Chip_RIT_SetTimerInterval(LPC_RITIMER,100);
 
     InicializaPuertosTeclasYLeds();
 
@@ -148,28 +152,23 @@ int main(void)
     NVIC_EnableIRQ(RITIMER_IRQn);
     NVIC_EnableIRQ(ADC0_IRQn);
 
-    while(1){};
+
 
     while(1){
-    	/* Start A/D conversion */
-    	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
-      /* Waiting for A/D conversion complete */
-      while (Chip_ADC_ReadStatus(LPC_ADC0,ADC_CH1,ADC_DR_DONE_STAT) != SET) {}
-      /* Read ADC value */
-      Chip_ADC_ReadValue(LPC_ADC0,ADC_CH1, &dataADC);
 
-     if (dataADC==0){
-       PrendeLed(1);
-       ApagaLed(2);
+
+     if (dataADC<5){
+       PrendeLed(4);
+       ApagaLed(5);
        }
      else{
-       if (dataADC==1023){
-         PrendeLed(2);
-    	 ApagaLed(1);
+       if (dataADC>1020){
+         PrendeLed(5);
+    	 ApagaLed(4);
     	 }
        else{
-    	 ApagaLed(1);
-    	 ApagaLed(2);
+    	 ApagaLed(4);
+    	 ApagaLed(5);
     	 }
        }
 
