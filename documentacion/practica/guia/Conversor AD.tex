@@ -1,0 +1,78 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[ansinew]{inputenc}
+%\usepackage[hidelinks]{hyperref}
+\usepackage[right=1.5cm,left=2.5cm,top=2cm,bottom=2cm,headsep=0cm,footskip=0.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{enumerate}
+\usepackage{enumerate}
+\usepackage{caption}   	%para colocar los caption en las figuras dentro el ambiente minipage.
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+%\usepackage[hidelinks]{hyperref}
+\title{Programación de la EDU-CIAA en lenguaje C}
+\author{}
+
+\bibliographystyle{plain}
+\hypersetup{ %
+colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
+}
+%pdfborder = {0 0 0}
+\begin{document}
+
+%\begin{titlepage}
+
+\setlength{\unitlength}{0.2cm}\hypersetup{colorlinks=false,linkbordercolor=red,linkcolor=green,pdfborderstyle={/S/U/W 1}}
+ %Especificar unidad de trabajo
+
+\begin{multicols}{2}
+
+\begin{flushleft}
+    \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
+\end{flushleft}
+\columnbreak
+\bigskip
+\begin{flushright}
+    \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
+\end{flushright}
+\end{multicols}
+\vspace{0.5cm}
+
+\begin{center}
+    {
+    \textbf{\Large Manejo del Conversor Analógico-Digital para el
+        microcontrolador LPC43XX con la biblioteca LPCOpen}\\[1.5cm]
+	}
+\end{center}
+
+%\newpage
+\vspace{1cm}
+En este trabajo, además de todas las funciones empleadas hasta este momento de GPIO, RITimer e IRQ, vamos a incorporar las funciones de uso del conversor Analógico a Digital (pag 1327 del User Manual ).\\
+
+En primer lugar se debe configurar la System Control Unit (SCU): Algunos pines soportan el multiplexado de funciones digitales y analógicas, sin embargo, todas las entradas y salidas analógicas del ADC y DAC están además ruteadas a pines de función analógica sin necesidad de multiplexado.\\
+
+Lo que si es necesario, es indicarle que vamos a utilizar el conversor AD mediante la función:\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___s_c_u__18_x_x__43_x_x.html#ga198684376606623332684569065a6d27}{\texttt{Chip\_SCU\_ADC\_Channel\_Config(uint32\_t ADC\_ID, uint8\_t channel);}}\\
+
+Para después de eso, utilizar las funciones de LPOpen para el manejo del
+conversor \href{http://docs.lpcware.com/lpcopen/v1.03/group___a_d_c__18_x_x__43_x_x.html}{AD}, incorporadas en  \texttt{\textit{adc\_18xx\_43xx.h}} :\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___a_d_c__18_x_x__43_x_x.html#ga9c3e36e83d27f02ccabcba7e5a9befd0}{\texttt{Chip\_ADC\_Init(LPC\_ADC\_T *pADC, ADC\_Clock\_Setup\_T* ADCSetup );}}\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___a_d_c__18_x_x__43_x_x.html#gac16bb5474c843f941966e829d59d854e}{\texttt{Chip\_ADC\_EnableChannel(LPC\_ADC\_T *pADC, ADC\_CHANNEL\_T channel,FunctionalState NewState)}}\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___a_d_c__18_x_x__43_x_x.html#ga7a349732e44df642b1e86c63f5289bc3}{\texttt{Chip\_ADC\_SetStartMode(LPC\_ADC\_T *pADC, ADC\_START\_MODE\_T mode,ADC\_EDGE\_CFG\_T EdgeOption)}}\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___a_d_c__18_x_x__43_x_x.html#ga14831abe4fd86e0617cedccca77b19cf}{\texttt{Chip\_ADC\_ReadStatus(LPC\_ADC\_T *pADC, uint8\_t channel, uint32\_t StatusType)}}\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___a_d_c__18_x_x__43_x_x.html#gad413251b83a9c9940569ac3db31d3dfa}{\texttt{Chip\_ADC\_ReadValue(LPC\_ADC\_T *pADC, uint8\_t channel, uint16\_t *data)}}\\
+
+
+
+\end{document}
+

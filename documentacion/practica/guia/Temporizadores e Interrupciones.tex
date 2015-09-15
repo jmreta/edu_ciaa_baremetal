@@ -1,0 +1,81 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[ansinew]{inputenc}
+%\usepackage[hidelinks]{hyperref}
+\usepackage[right=1.5cm,left=2.5cm,top=2cm,bottom=2cm,headsep=0cm,footskip=0.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{enumerate}
+\usepackage{enumerate}
+\usepackage{caption}   	%para colocar los caption en las figuras dentro el ambiente minipage.
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+%\usepackage[hidelinks]{hyperref}
+\title{Programación de la EDU-CIAA en lenguaje C}
+\author{}
+
+\bibliographystyle{plain}
+\hypersetup{ %
+colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
+}
+%pdfborder = {0 0 0}
+\begin{document}
+
+%\begin{titlepage}
+
+\setlength{\unitlength}{0.2cm}\hypersetup{colorlinks=false,linkbordercolor=red,linkcolor=green,pdfborderstyle={/S/U/W 1}}
+ %Especificar unidad de trabajo
+
+\begin{multicols}{2}
+
+\begin{flushleft}
+    \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
+\end{flushleft}
+\columnbreak
+\bigskip
+\begin{flushright}
+    \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
+\end{flushright}
+\end{multicols}
+\vspace{0.5cm}
+
+\begin{center}
+    {
+    \textbf{\Large Manejo de Timer e Interrupciones para el microcontrolador LPC43XX con la biblioteca LPCOpen}\\[1.5cm]
+	}
+\end{center}
+
+%\newpage
+\vspace{1cm}
+
+En este trabajo práctico se puede utilizar el Timer de Interrupciones Repetitivas (pag. 1073 del User Manual) cuyas funciones están implementadas en el archivo \textit{ritimer\_18xx\_43xx.c}, de la biblioteca LPCOpen.\\
+
+También disponemos de una función de inicialización del temporizador:\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___r_i_t__18_x_x__43_x_x.html#ga9a8dc91573ba6d4556d787a62a8a3f7e}{\texttt{Chip\_RIT\_Init(LPC\_RITIMER\_T* pRITimer);}} \\
+
+A la misma hay que pasarle como parámetro la dirección base del periférico RIT definida ya en \texttt{chip\_lpc 43xx.h} como LPC\_RITIMER.\\
+
+Se debe configurar el intervalo (en ms.) de interrupción empleando la función:\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___r_i_t__18_x_x__43_x_x.html#ga9473901c9e5ba4867c14597473cacf2b}{\texttt{Chip\_RIT\_SetTimer(LPC\_RITIMER\_T* pRITimer, uint32\_T intervalo);}}\\
+
+Para escribir el código de servicio de la interrupción, se debe generar una función:\\
+
+\texttt{void NombreDeLaIRutinaDeServicio(void);} \\
+
+ y enlazar ese nombre en el vector de interrupciones definido en \texttt{vector.c}.\\
+ 
+Para habilitar la interrupción se utiliza la función:\\
+
+\texttt{NVIC\_EnableIRQ(IRQn\_Type IRQn);}  definida en \texttt{core\_cm4.h}.\\
+
+Para borrar el flag de interrupción pendiente, existe en \texttt{ritimer\_18xx\_43xx.c} una función para esto:\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___r_i_t__18_x_x__43_x_x.html#ga16ba8104cee04723ddd751b99655f01d}{\texttt{Chip\_RIT\_ClearInt();}}
+
+\end{document}
+

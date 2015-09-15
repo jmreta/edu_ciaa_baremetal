@@ -1,0 +1,72 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[ansinew]{inputenc}
+%\usepackage[hidelinks]{hyperref}
+\usepackage[right=1.5cm,left=2.5cm,top=2cm,bottom=2cm,headsep=0cm,footskip=0.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{enumerate}
+\usepackage{enumerate}
+\usepackage{caption}   	%para colocar los caption en las figuras dentro el ambiente minipage.
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+%\usepackage[hidelinks]{hyperref}
+\title{Programación de la EDU-CIAA en lenguaje C}
+\author{}
+
+\bibliographystyle{plain}
+\hypersetup{ %
+colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
+}
+%pdfborder = {0 0 0}
+\begin{document}
+
+%\begin{titlepage}
+
+\setlength{\unitlength}{0.2cm}\hypersetup{colorlinks=false,linkbordercolor=red,linkcolor=green,pdfborderstyle={/S/U/W 1}}
+ %Especificar unidad de trabajo
+
+\begin{multicols}{2}
+
+\begin{flushleft}
+    \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
+\end{flushleft}
+\columnbreak
+\bigskip
+\begin{flushright}
+    \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
+\end{flushright}
+\end{multicols}
+\vspace{0.5cm}
+
+\begin{center}
+    {
+    \textbf{\Large Manejo del Conversor Digital-Analógico para el
+        microcontrolador LPC43XX con la biblioteca LPCOpen}\\[1.5cm]
+	}
+\end{center}
+
+%\newpage
+\vspace{1cm}
+
+En este trabajo, además de todas las funciones empleadas hasta este momento de GPIO, RITimer e IRQ, vamos a incorporar las funciones de uso del conversor Digital a Analógico (pag 1350 del User Manual).\\
+
+Primero hay que configurar la System Control Unit (SCU): Algunos pines soportan el multiplexado de funciones digitales y analógicas, sin embargo, todas las entradas y salidas analógicas del ADC y DAC están además ruteadas a pines de función analógica sin necesidad de multiplexado.\\
+
+Lo que si es necesario, es indicarle que vamos a utilizar el conversor DA mediante la función: \\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___s_c_u__18_x_x__43_x_x.html#ga5dd513d87e5d14f80544f59692536a92}{\texttt{Chip\_SCU\_DAC\_Analog\_Config();}}\\
+
+Para después de eso, utilizar las funciones de LPOpen para el manejo del conversor \href{http://docs.lpcware.com/lpcopen/v1.03/group___d_a_c__18_x_x__43_x_x.html}{DA}, incorporadas en \texttt{\textit{dac\_18xx\_43xx.h}}:\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___d_a_c__18_x_x__43_x_x.html#ga677c6f03e4ea92656c4cb3497fbb4a1b}{\texttt{Chip\_DAC\_Init(LPC\_DAC\_T *pDAC);}}\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___d_a_c__18_x_x__43_x_x.html#ga4cfcf4f22b8d719d9cb9947a4e223c32}{\texttt{Chip\_DAC\_UpdateValue((LPC\_DAC\_T *pDAC, uint32\_t dac\_value);}}\\
+
+
+
+\end{document}
+

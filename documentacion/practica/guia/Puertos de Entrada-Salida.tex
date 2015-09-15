@@ -1,0 +1,127 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[ansinew]{inputenc}
+%\usepackage[hidelinks]{hyperref}
+\usepackage[right=1.5cm,left=2.5cm,top=2cm,bottom=2cm,headsep=0cm,footskip=0.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{enumerate}
+\usepackage{enumerate}
+\usepackage{caption}   	%para colocar los caption en las figuras dentro el ambiente minipage.
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+%\usepackage[hidelinks]{hyperref}
+\title{Programación de la EDU-CIAA en lenguaje C}
+\author{}
+
+\bibliographystyle{plain}
+\hypersetup{ %
+colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
+}
+%pdfborder = {0 0 0}
+\begin{document}
+
+%\begin{titlepage}
+
+\setlength{\unitlength}{0.2cm}\hypersetup{colorlinks=false,linkbordercolor=red,linkcolor=green,pdfborderstyle={/S/U/W 1}}
+ %Especificar unidad de trabajo
+
+\begin{multicols}{2}
+
+\begin{flushleft}
+    \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
+\end{flushleft}
+\columnbreak
+\bigskip
+\begin{flushright}
+    \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
+\end{flushright}
+\end{multicols}
+\vspace{0.5cm}
+
+\begin{center}
+    {
+    \textbf{\Large Manejo de Puertos en el microcontrolador LPC43XX con la biblioteca LPCOpen}\\[1.5cm]
+}
+\end{center}
+
+
+
+
+
+Para la realización de todos los trabajos prácticos de este curso, se utilizará la librería LPCOpen para el acceso a los periféricos específicos del LPC4337.\\
+
+Esta biblioteca, se incluye en el Firmware de la CIAA, en:\\
+ $...CIAA\backslash Firmware\backslash externals\backslash drivers\backslash cortexM4\backslash lpc43xx$\\
+
+Es destacable, que para emplear un procesador diferente, se debe cambiar esta bibioteca, por  ejemplo, para trabajar con la CIAA\_FSL\ (CIAA Freescale), es necesario cargar los drivers que se encuentran en:\\
+ $...CIAA\backslash Firmware\backslash externals\backslash drivers\backslash cortexM4\backslash k60\_120 $.\\
+
+\section{Puertos de Salida: LEDS}
+
+Para el manejo de puertos de entrada salida de uso general (GPIO), el archivo gpio\_18xx\_43xx.c, contiene todos los drivers para manejo del mismo. Ver documentación de \href{http://docs.lpcware.com/lpcopen/v1.03/group___g_p_i_o__18_x_x__43_x_x.html}{LPCOpen}.\\
+
+Para configurar un GPIO, lo primero es llamar a la función 
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___g_p_i_o__18_x_x__43_x_x.html#gaeaca39372c8ff9f288243a20dd2259ce}{\texttt{Chip\_GPIO\_Init(LPC\_GPIO\_T * pGPIO)}}, a la hay que pasarle como parámetro la dirección base del periférico GPIO definida ya en chip\_lpc 43xx.h como LPC\_GPIO\_PORT.\\
+
+Luego hay que configurar la System Control Unit (SCU), para indicarle las características eléctricas de cada pin empleado  y remapearlos como puertos GPIO. Hay que recordar que en este procesador, se puede elegir entre varias funciones disponibles para cada pin (ver Tabla 189 en la página 397 del User Manual):\\
+
+\texttt{Chip\_SCU\_PinMux(2,0,MD\_PUP,FUNC4); /* mapea P2\_0  en GPIO5[0], LED0R y habilita el pull up*/}\\
+
+\texttt{Chip\_SCU\_PinMux(2,1,MD\_PUP,FUNC4); /* mapea P2\_1  en GPIO5[1], LED0G y habilita el pull up */}
+
+\texttt{Chip\_SCU\_PinMux(2,2,MD\_PUP,FUNC4); /* mapea P2\_2  en GPIO5[2], LED0B y habilita el pull up */}
+
+\texttt{Chip\_SCU\_PinMux(2,10,MD\_PUP,FUNC0); /* remapea P2\_10 en GPIO0[14], LED1 y habilita el pull up */}
+
+\texttt{Chip\_SCU\_PinMux(2,11,MD\_PUP,FUNC0); /* remapea P2\_11 en GPIO1[11], LED2 y habilita el pull up */}
+
+\texttt{Chip\_SCU\_PinMux(2,12,MD\_PUP,FUNC0); /* remapea P2\_12 en GPIO1[12], LED3 y habilita el pull up */}\\
+
+A continuación, se debe seleccionar el modo (entrada o salida) de cada pin con la función:\\
+
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___g_p_i_o__18_x_x__43_x_x.html#ga30d84fb97b47e0a8dc3a249cd77f34f7}{\texttt{Chip\_GPIO\_SetDir(LPC\_GPIO\_T * pGPIO, uint8\_t portNum,uitn32\_t portValue,uint8\_t out);}}\\
+
+Para setear y resetear los pines, existen numerosas funciones, entre ellas:\\
+\begin{flushleft}
+
+\texttt{Chip\_GPIO\_ClearValue();}\\
+\texttt{Chip\_GPIO\_SetValue();}\\
+\texttt{Chip\_GPIO\_SetPinOutLow();}\\
+\texttt{Chip\_GPIO\_SetPinOutHigh();}\\
+\texttt{Chip\_GPIO\_SetPortOutHigh();}\\
+\texttt{Chip\_GPIO\_SetPinToggle();}\\
+\texttt{Chip\_GPIO\_SetPortToggle();}\\
+\end{flushleft}
+
+A las que siempre hay que pasarles como parámetro la dirección base del periférico GPIO (LPC\_GPIO\_PORT), el número de puerto y el bit a modificar.
+En caso de las funciones que hacen referencia a un solo GPIO (contienen la palabra “Pin”) se le indica el número de bit del puerto que se desea modificar.\\
+
+En caso de funciones que acceden a todo el puerto (Port), se le pasa una máscara del tipo uint32\_T con los bits a modificar en 1.
+
+
+\section{Puertos de Entrada: Pulsadores}
+
+Para trabajar con los puertos de salida disponibles en la placa se deben configurar las entradas digitales correspondientes a las teclas.\\
+\begin{flushleft}
+
+\texttt{Chip\_SCU\_PinMux(1,0,MD\_PUP|MD\_EZI|MD\_ZI,FUNC0);/* mapea P1\_0  en GPIO 0[4], SW1 */}\\
+\texttt{Chip\_SCU\_PinMux(1,0,MD\_PUP|MD\_EZI|MD\_ZI,FUNC0);/* mapea P1\_0  en GPIO 0[4], SW1 */}\\
+\texttt{Chip\_SCU\_PinMux(1,1,MD\_PUP|MD\_EZI|MD\_ZI,FUNC0);/* mapea P1\_1  en GPIO 0[8], SW2 */}\\
+\texttt{Chip\_SCU\_PinMux(1,2,MD\_PUP|MD\_EZI|MD\_ZI,FUNC0);/* mapea P1\_2  en GPIO 0[9], SW3 */}\\
+\texttt{Chip\_SCU\_PinMux(1,6,MD\_PUP|MD\_EZI|MD\_ZI,FUNC0);/* mapea P1\_6  en GPIO 1[9], SW4 */}\\
+\end{flushleft}
+
+Además, habilita para cada pin el buffer de entrada y deshabilita el filtro de glitch (ver figura 41 del User Manual).
+Es interesante como re realiza esta acción en el driver de GPIO del Firmware de la CIAA: ”ciaaDriverDio.c”, que se encuentra en %…CIAA\Firmware\modules\drivers\cortexM4\lpc43xx\lpc4337\src
+\\
+Luego setear estos pines como entrada (\href{http://docs.lpcware.com/lpcopen/v1.03/group___g_p_i_o__18_x_x__43_x_x.html#ga30d84fb97b47e0a8dc3a249cd77f34f7}{\texttt{Chip\_GPIO\_SetDir}}), y para leer, se pueden utilizar las funciones:\\
+\begin{flushleft}
+\texttt{Chip\_GPIO\_ReadValue()}\\
+\texttt{Chip\_GPIO\_ReadPortBit()}
+\end{flushleft}
+
+\end{document}
