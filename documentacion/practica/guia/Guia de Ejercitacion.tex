@@ -77,9 +77,12 @@ El hardware se basa en el microcontrolador \href{http://www.nxp.com/documents/us
 
 \section{Manejo de Puertos I/O}
 
-Dentro de los periféricos disponibles en el hardware de la placa, se encuentran tres leds, un led RGB y cuatro teclas. Para el control de estos dispositivos, se debe configurar y acceder al los puertos de entrada/salida.\\
+Dentro de los dispositivos disponibles en el hardware de la placa, se encuentran tres leds, un led RGB y cuatro teclas. Es recomendable realizar un driver de dispositivo que permita configurar y acceder los puertos de entrada/salida relacionados con los mismos.\\
 
-Para la resolución de las consignas que se presnetan a continuación se pide que diseñe e implemente sus propios drivers para el manejo de los dispositivos mencionados. Para esto se deberá realizar el codigo y las definiciones necesarias los siguientes archivos:
+Para la resolución de las consignas que se presentan a continuación se pide que diseñe e implemente sus propios drivers, basado en las funciones GPIO de la biblioteca \href{https://www.lpcware.com/content/nxpfile/lpcopen-software-development-platform-lpc43xx-packages}{LPCOpen}, para el manejo de los dispositivos mencionados.
+Los documentos \textit{\textbf{Manejo de Puertos de Entrada y Manejo de Puertos de Salida}} provee un resumen de las funciones necesarias.\\
+
+Deberá realizar entonces el codigo y las definiciones necesarias en los siguientes archivos:
 
 \begin{itemize}
 \item Driver leds:  \texttt{led.c, led.h}
@@ -87,25 +90,22 @@ Para la resolución de las consignas que se presnetan a continuación se pide que 
 \end{itemize}
 
 El driver del leds deberá contar con funciones para:
-% Ejemplo: \texttt{\textbf{void} inicializar_leds ( \textbf{void})}.
-\texttt{Chip\_GPIO\_SetPortToggle();}\\
+
 \begin{itemize}
-\item Incializar los leds. Ejemplo: \texttt{\textbf{void} InicializarLeds(\textbf{void})}.
-\item Encender un led recibiendo como parámetro el LED al que se refiere.
+\item Incializar los leds. Ejemplo: \texttt{\textbf{void} InicializarLeds(\textbf{void}});
+\item Encender un led recibiendo como parámetro el LED al que se refiere\footnote{\underline{\textbf{Nota:}} Tener en cuenta que al controlar el LED RGB, se deberá especificar además el color al cual se refiere.}.
 \item Apagar un led recibiendo como parámetro el LED al que se refiere.
 \item Cambiar el estado de un led recibiendo como parametro el LED al que se refere.
 \end{itemize}
 
-\underline{\textbf{Nota:}} Se deberá tener en cuenta que al controlar el LED RGB, se deberá especificar además el color al cual se refiere. \\
 \vspace{0.5cm}
 
 El driver de teclas deberá contener funcones para:\\
 
 \begin{itemize}
-\item Incializar los leds. Ejemplo: \texttt{\textbf{void} InicializarTeclas(\textbf{void})}.
-\item Detectar tecla presionada con o sin antirrebote.
-\item Detectar tecla presionada con liberación de tecla.
-\item Escanear tecla presionada.
+\item Incializar los leds. Ejemplo: \texttt{\textbf{void} InicializarTeclas(\textbf{void}});
+\item Detectar tecla presionada recibiendo como parámetro la tecla a consultar, si se usa antirrebote y liberación de tecla.
+\item Escanear teclado. Ejemplo: \texttt{uint8\_t kbhit(\textbf{void});}
 \end{itemize}
 
 \subsection{Consignas}
@@ -121,7 +121,13 @@ El driver de teclas deberá contener funcones para:\\
 
 \section{Temporizador e Interrupciones}
 
+Tanto para el empleo de los temprizadores como para el manejo de interrupciones, se emplearán los drivers provistos por la biblioteca \href{https://www.lpcware.com/content/nxpfile/lpcopen-software-development-platform-lpc43xx-packages}{LPCOpen}.\\
+
+El documento \textit{\textbf{Manejo de Timer e Interrupciones }} provee un resumen de las funciones necesarias.
+
+
 \subsection{Consignas}
+
 \begin{enumerate}[ a) ]
 
 \item Diseñe e implemente un firmware sobre la EDU-CIAA que encienda de a un led por vez y de manera secuencial. El tiempo de encendido de cada led ser 250ms. Se deberá temporizar mediante interrupciones sin usar funciones de retardo por software.
@@ -153,6 +159,10 @@ Incorpore al ejercicio anterior la funcionalidad de variar el periodo de parpade
 %\begin{center}
 \section{\large Generación de Señales Analógicas (D/A)}
 %\end{center}
+
+Para el manejo de módulo AD-DA se empleará el drivers provisto por la biblioteca \href{https://www.lpcware.com/content/nxpfile/lpcopen-software-development-platform-lpc43xx-packages}{LPCOpen}.\\
+El documento \textit{\textbf{Manejo de ADC}} provee un resumen de las funciones necesarias.
+
 
 \begin{itemize}
 
@@ -221,7 +231,7 @@ El sistema solo responderá a los carácteres 'a', 'r' y 'v' según el siguiente de
 \section{\large Manejo de periféricos con POSIX}
 %\end{center}
 
-Repita las consignas 1.1, 1.2 y 2.1 usando las funciones POSIX definidas en el Firmware de la CIAA.
+Repita las consignas 2.1.a y 2.1.b usando las funciones POSIX definidas en el Firmware de la CIAA.
 
 \section{\large Ejercicios Integradores}
 
