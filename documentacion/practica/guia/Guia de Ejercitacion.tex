@@ -7,7 +7,6 @@
 \usepackage{graphicx}
 \usepackage{multicol}
 \usepackage{enumerate}
-\usepackage{enumerate}
 \usepackage{caption}   	%para colocar los caption en las figuras dentro el ambiente minipage.
 \usepackage{courier}
 \usepackage{xcolor}
@@ -32,25 +31,93 @@ colorlinks=flase,linkbordercolor=black,linkcolor=blue,pdfborderstyle={/S/U/W 1}
 \begin{multicols}{2}
 
 \begin{flushleft}
-    \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
+ \footnotesize{ {\textbf{Curso Introductorio} }\\5ta Escuela de Sistemas Embebidos\\Tucumán - Horco Molle 2015\\{RUSE - ACSE}}
 \end{flushleft}
 \columnbreak
 \bigskip
 \begin{flushright}
-    \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
+ \includegraphics[width=1.5in]{Imagenes/logo_ruse} \\ \includegraphics[width=1.5in]{Imagenes/acse}\\
 \end{flushright}
 \end{multicols}
 \vspace{0.5cm}
 
 \begin{center}
-    {
-    \textbf{\Large Manejo de Timer e Interrupciones para el microcontrolador LPC 43XX con la biblioteca LPCOpen}\\[1.5cm]
-	}
+ {\large \textbf{Guia de Ejercitación}}\\[0.5cm]
+ \textbf{\large Programación de la EDU-CIAA en lenguaje C (sin RTOS)}\\[1.5cm]
+
 \end{center}
+
+
+\section*{\large Objetivos}
+
+\begin{itemize}
+ \item Estudiar el hardware de la EDU-CIAA-NXP.
+ \item Analizar características de la arquitectura ARM Cortex M4 sobre el microcontrolador LPC4337.
+ \item Desarrollar experiencia en la instalacióny uso del CIAA-IDE.
+
+\end{itemize}
 
 %\newpage
 \vspace{1cm}
 
+\section{Introducción}
+
+La presente guía de ejercitación está desarrollada para trabajaro sobre el harware de EDU-CIAA NXP. Esta placa es una versión de bajo costo de la CIAA-NXP pensada para la enseñanza universitaria, terciaria y secundaria.\\
+
+La docuentación relacionada al diseño de la EDU-CIAA NXP se encuentra disponible en el sitio del proyecto accesble a través del siguiente \href{http://www.proyecto-ciaa.com.ar/devwiki/doku.php?id=desarrollo:edu-ciaa:edu-ciaa-nxp}{link}.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[height=6cm]{./Imagenes/edu-ciaa-bloques}
+	\caption{Diagrama en Bloques de la EDU-CIAA NXP. Fuente: www.proyecto-ciaa.com.ar}
+	\label{fig:edu-ciaa}
+\end{figure}
+
+El hardware se basa en el microcontrolador \href{http://www.nxp.com/documents/user_manual/UM10503.pdf}{LPC4337} de la firma NXP. La distribución de pines se encuentra detallada en el documento \href{http://www.proyecto-ciaa.com.ar/devwiki/lib/exe/fetch.php?media=desarrollo:edu-ciaa:edu-ciaa-nxp_pinout_a4_v4r0_es.pdf}{asignación de pines}.
+
+\section{Manejo de Puertos I/O}
+
+Dentro de los periféricos disponibles en el hardware de la placa, se encuentran tres leds, un led RGB y cuatro teclas. Para el control de estos dispositivos, se debe configurar y acceder al los puertos de entrada/salida.\\
+
+Para la resolución de las consignas que se presnetan a continuación se pide que diseñe e implemente sus propios drivers para el manejo de los dispositivos mencionados. Para esto se deberá realizar el codigo y las definiciones necesarias los siguientes archivos:
+
+\begin{itemize}
+\item Driver leds:  \texttt{led.c, led.h}
+\item Driver teclas:  \texttt{teclas.c, teclas.h}
+\end{itemize}
+
+El driver del leds deberá contar con funciones para:
+% Ejemplo: \texttt{\textbf{void} inicializar_leds ( \textbf{void})}.
+\texttt{Chip\_GPIO\_SetPortToggle();}\\
+\begin{itemize}
+\item Incializar los leds. Ejemplo: \texttt{\textbf{void} InicializarLeds(\textbf{void})}.
+\item Encender un led recibiendo como parámetro el LED al que se refiere.
+\item Apagar un led recibiendo como parámetro el LED al que se refiere.
+\item Cambiar el estado de un led recibiendo como parametro el LED al que se refere.
+\end{itemize}
+
+\underline{\textbf{Nota:}} Se deberá tener en cuenta que al controlar el LED RGB, se deberá especificar además el color al cual se refiere. \\
+\vspace{0.5cm}
+
+El driver de teclas deberá contener funcones para:\\
+
+\begin{itemize}
+\item Incializar los leds. Ejemplo: \texttt{\textbf{void} InicializarTeclas(\textbf{void})}.
+\item Detectar tecla presionada con o sin antirrebote.
+\item Detectar tecla presionada con liberación de tecla.
+\item Escanear tecla presionada.
+\end{itemize}
+
+\subsection{Consignas}
+
+\begin{enumerate}[ a) ]
+
+\item Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear el led amarillo con un periodo que permita visualizar el proceso. Emplear retardo por software.
+
+\item Diseñe e implemente un firmware sobre la EDU-CIAA que haga parpadear un led con un periodo que permita visualizar el proceso. Mediante las cuatro teclas disponibles se debe poder seleccionar el led activo. Emplear retardo por software.\\
+\end{enumerate}
+
+%\begin{center}
 
 \section{Temporizador e Interrupciones}
 
