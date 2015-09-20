@@ -12,6 +12,7 @@
 \usepackage{calrsfs}
 \usepackage{cases}
 \usepackage{hyperref}
+\usepackage{courier}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows}
@@ -318,6 +319,17 @@ Es la parte de software que se relaciona directamente con el hardware. Su funció
 
 
 \end{frame}
+
+\subsection{Puertos I/O}
+
+\begin{frame}{Puertos de Entrada-Salida}
+
+Para el manejo de puertos de entrada salida de uso general (GPIO), el archivo gpio\_18xx\_43xx.c, contiene todos los drivers para manejo del mismo. Ver documentación de \href{http://docs.lpcware.com/lpcopen/v1.03/group___g_p_i_o__18_x_x__43_x_x.html}{LPCOpen}.\\
+\vspace{.5cm}
+Para configurar un GPIO, lo primero es llamar a la función 
+\href{http://docs.lpcware.com/lpcopen/v1.03/group___g_p_i_o__18_x_x__43_x_x.html#gaeaca39372c8ff9f288243a20dd2259ce}{\texttt{Chip\_GPIO\_Init(LPC\_GPIO\_T * pGPIO)}}, a la hay que pasarle como parámetro la dirección base del periférico GPIO definida ya en chip\_lpc 43xx.h como LPC\_GPIO\_PORT.
+\end{frame}
+
 
 
 \end{document}
